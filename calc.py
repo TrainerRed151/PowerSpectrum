@@ -8,6 +8,9 @@ import matplotlib.pyplot as plt;
 import math;
 import sys;
 
+def mag(a, b, c):
+    return math.sqrt(a*a + b*b + c*c);
+
 if len(sys.argv) != 4:
     print('Invalid number of arguments');
     exit();
@@ -26,6 +29,7 @@ deltax = -1*np.ones((N, N, N), dtype=float);
 nbar = float(ngal)/(N*N*N);
 kf = 2.0*math.pi/L;
 
+# NGP Method
 for i in range(ngal):
     x[i] = random.uniform(0, L);
     y[i] = random.uniform(0, L);
@@ -40,11 +44,33 @@ for i in range(ngal):
 
 deltak = abs(np.fft.fftn(deltax, (N, N, N)))**2;
 
-print(deltak);
-print(np.fft.fftfreq(N, N/L));
-print(kf);
+#print(deltak);
+#print(np.fft.fftfreq(N, N/L));
+#print(kf);
 
-#plt.plot(k, pktemp);
+ktemp = np.fft.fftfreq(N, N/L);
+
+kmag = np.arange(kf, kf*N/2.0, kf);
+pk = np.zeros(len(kmag));
+
+# Average to find monopole moment
+sum = 0.0;
+for l in range(len(kmag)):
+    for i in range(N):
+        for j in range(N):
+            for k in range(N):
+                d = mag(ktemp[i], ktemp[j], ktemp[k]);
+                if d > (kmag[l] - kf/2.0) and d < (kmag[l] + kf/2.0):
+                    pk[l] += deltak[i][j][k];
+                    sum += 1.0;
+    pk[l] = pk[l]/sum;
+
+pk = L**3*pk/N**6.0;
+
+print(kmag);
+print(pk);
+
+#plt.plot(kmag, pk);
 #plt.xscale('log');
 #plt.yscale('log');
 #plt.show();
