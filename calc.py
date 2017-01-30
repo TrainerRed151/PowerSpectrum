@@ -7,9 +7,16 @@ import numpy as np;
 import matplotlib.pyplot as plt;
 import math;
 import sys;
+import csv;
 
 def mag(a, b, c):
     return math.sqrt(a*a + b*b + c*c);
+
+def fileLen(fname):
+    with open(fname) as f:
+        for i, l in enumerate(f):
+            pass;
+    return i + 1;
 
 if len(sys.argv) != 4:
     print('Invalid number of arguments');
@@ -17,7 +24,9 @@ if len(sys.argv) != 4:
 
 L = float(sys.argv[1]);
 N = int(sys.argv[2]);
-ngal = int(sys.argv[3]);
+file = sys.argv[3];
+#ngal = int(sys.argv[3]);
+ngal = fileLen(file);
 
 x = np.zeros(ngal);
 y = np.zeros(ngal);
@@ -28,6 +37,15 @@ deltax = -1*np.ones((N, N, N), dtype=float);
 
 nbar = float(ngal)/(N*N*N);
 kf = 2.0*math.pi/L;
+
+f = open('stars.dat', 'rt');
+reader = csv.reader(f);
+i = 0;
+for row in reader:
+    x[i] = 10 + float(row[0]);
+    y[i] = 10 + float(row[1]);
+    z[i] = 10 + float(row[2]);
+    i += 1;
 
 # NGP Method
 for i in range(ngal):
@@ -45,12 +63,13 @@ for i in range(ngal):
 deltak = abs(np.fft.fftn(deltax, (N, N, N)))**2;
 
 #print(deltak);
-#print(np.fft.fftfreq(N, N/L));
+#print(np.fft.fftfreq(N, d=L/N));
 #print(kf);
 
-ktemp = np.fft.fftfreq(N, N/L);
+ktemp = np.fft.fftfreq(N, d=L/N);
 
-kmag = np.arange(kf, kf*N/2.0, kf);
+#kmag = np.arange(0, kf*N/2.0, kf);
+kmag = np.arange(kf*0.5, -np.amin(ktemp)+kf*0.5, kf);
 pk = np.zeros(len(kmag));
 
 # Average to find monopole moment
@@ -65,10 +84,11 @@ for l in range(len(kmag)):
                     sum += 1.0;
     pk[l] = pk[l]/sum;
 
-pk = L**3*pk/N**6.0;
+pk = (L**3.0)*pk/(N**6.0);
 
 print(kmag);
 print(pk);
+print(pk*kmag**3.0);
 
 #plt.plot(kmag, pk);
 #plt.xscale('log');
