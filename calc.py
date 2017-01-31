@@ -4,7 +4,7 @@
 
 import random;
 import numpy as np;
-import matplotlib.pyplot as plt;
+#import matplotlib.pyplot as plt;
 import math;
 import sys;
 import csv;
@@ -87,15 +87,22 @@ for l in range(len(kmag)):
 
 pk = (L**3.0)*pk/(N**6.0);
 
-print(kmag);
-print(pk);
-print(pk*kmag**3.0);
+#print(kmag);
+#print(pk);
+#print(pk*kmag**3.0);
 
-pdfplot = plt.figure();
-plt.plot(kmag, pk);
-plt.xscale('log');
-plt.yscale('log');
-plt.xlabel('k');
-plt.ylabel('P(k)');
+#pdfplot = plt.figure();
+#plt.plot(kmag, pk);
+#plt.xscale('log');
+#plt.yscale('log');
+#plt.xlabel('k');
+#plt.ylabel('P(k)');
 #plt.show();
-pdfplot.savefig('test.pdf');
+#pdfplot.savefig('test.pdf');
+
+
+# Output values to file
+f = open('pk.dat', 'w');
+writer = csv.writer(f, lineterminator='\n');
+for i in range(len(kmag)):
+    writer.writerow([kmag[i], pk[i]]);
