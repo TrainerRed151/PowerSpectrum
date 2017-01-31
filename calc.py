@@ -91,7 +91,11 @@ print(kmag);
 print(pk);
 print(pk*kmag**3.0);
 
+pdfplot = plt.figure();
 plt.plot(kmag, pk);
 plt.xscale('log');
 plt.yscale('log');
-plt.show();
+plt.xlabel('k');
+plt.ylabel('P(k)');
+#plt.show();
+pdfplot.savefig('test.pdf');
