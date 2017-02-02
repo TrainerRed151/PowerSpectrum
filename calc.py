@@ -2,7 +2,6 @@
 
 # Copyright (c) 2017 Brian Pomerantz. All Rights Reserved.
 
-import random;
 import numpy as np;
 #import matplotlib.pyplot as plt;
 import math;
@@ -36,8 +35,7 @@ z = np.zeros(ngal);
 deltax = -1*np.ones((N, N, N), dtype=float);
 
 nbar = float(ngal)/(N*N*N);
-#kf = 2.0*math.pi/L;
-kf = 1.0/L;
+kf = 2.0*math.pi/L;
 
 f = open(file, 'rt');
 reader = csv.reader(f);
@@ -50,10 +48,6 @@ for row in reader:
 
 # NGP Method
 for i in range(ngal):
-    #x[i] = random.uniform(0, L);
-    #y[i] = random.uniform(0, L);
-    #z[i] = random.uniform(0, L);
-    
     xi = int(round((N-1)*x[i]/L));
     yi = int(round((N-1)*y[i]/L));
     zi = int(round((N-1)*z[i]/L));
@@ -63,11 +57,7 @@ for i in range(ngal):
 
 deltak = abs(np.fft.fftn(deltax, (N, N, N)))**2;
 
-#print(deltak);
-#print(np.fft.fftfreq(N, d=L/N));
-#print(kf);
-
-ktemp = np.fft.fftfreq(N, d=L/N);
+ktemp = 2.0*math.pi*np.fft.fftfreq(N, d=L/N);
 
 kmag = np.arange(0, 0.5*kf*N, kf);
 pk = np.zeros(len(kmag));
@@ -79,7 +69,7 @@ for l in range(len(kmag)):
         for j in range(int((N+1)/2)):
             for k in range(int((N+1)/2)):
                 d = mag(ktemp[i], ktemp[j], ktemp[k]);
-                if d > (kmag[l] - kf/2.0) and d < (kmag[l] + kf/2.0):
+                if d > (kmag[l] - 0.5*kf) and d < (kmag[l] + 0.5*kf):
                     pk[l] += deltak[i][j][k];
                     sum += 1.0;
     if sum != 0:
@@ -87,9 +77,7 @@ for l in range(len(kmag)):
 
 pk = (L**3.0)*pk/(N**6.0);
 
-#print(kmag);
-#print(pk);
-
+# Plot power spectrum
 #pdfplot = plt.figure();
 #plt.plot(kmag, pk);
 #plt.xscale('log');
