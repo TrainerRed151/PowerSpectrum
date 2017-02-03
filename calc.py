@@ -12,10 +12,8 @@ def mag(a, b, c):
     return math.sqrt(a*a + b*b + c*c);
 
 def fileLen(fname):
-    with open(fname) as f:
-        for i, l in enumerate(f):
-            pass;
-    return i + 1;
+    with open(fname, 'r') as f:
+        return int(f.readline());
 
 if len(sys.argv) != 4:
     print('Invalid number of arguments');
@@ -34,16 +32,17 @@ z = np.zeros(ngal);
 #n = np.zeros((N, N, N));
 deltax = -1*np.ones((N, N, N), dtype=float);
 
-nbar = float(ngal)/(N*N*N);
+nbar = float(ngal)/((N-1)**3);
 kf = 2.0*math.pi/L;
 
 f = open(file, 'rt');
-reader = csv.reader(f);
-i = 0;
+reader = csv.reader(f, delimiter=' ');
+i = -1;
 for row in reader:
-    x[i] = float(row[0]);
-    y[i] = float(row[1]);
-    z[i] = float(row[2]);
+    if (i != -1):
+        x[i] = float(row[1]);
+        y[i] = float(row[2]);
+        z[i] = float(row[3]);
     i += 1;
 
 # NGP Method
@@ -59,7 +58,7 @@ deltak = abs(np.fft.fftn(deltax, (N, N, N)))**2;
 
 ktemp = 2.0*math.pi*np.fft.fftfreq(N, d=L/N);
 
-kmag = np.arange(0, 0.5*kf*N, kf);
+kmag = np.arange(kf, 0.5*kf*N, kf);
 pk = np.zeros(len(kmag));
 
 # Average to find monopole moment
@@ -75,7 +74,7 @@ for l in range(len(kmag)):
     if sum != 0:
         pk[l] = pk[l]/sum;
 
-pk = (L**3.0)*pk/(N**6.0);
+pk = (L**3.0)*pk/((N-1)**6.0);
 
 # Plot power spectrum
 #pdfplot = plt.figure();
