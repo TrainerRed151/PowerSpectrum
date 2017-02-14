@@ -55,7 +55,15 @@ for i in range(ngal):
     #n[xi][yi][zi] += 1;
     deltax[xi][yi][zi] += 1.0/nbar;
 
-deltak = abs(np.fft.fftn(deltax, (N, N, N)))**2;
+deltak = np.fft.fftn(deltax, (N, N, N));
+fac = 0.5*math.pi/kN;
+
+for i in range(N):
+    for j in range(N):
+        for k in range(N):
+            deltak[i][j][k] *= np.sinc(fac*i)*np.sinc(fac*j)*np.sinc(fac*k);
+
+deltak = abs(deltak)**2;
 
 ktemp = 2.0*math.pi*np.fft.fftfreq(N, d=L/N);
 
