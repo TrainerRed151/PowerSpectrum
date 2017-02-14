@@ -11,8 +11,9 @@ ngal = int(sys.argv[2]);
 
 f = open('random.dat', 'w');
 writer = csv.writer(f, lineterminator='\n');
+writer.writerow([ngal]);
 for i in range(ngal):
     x = random.uniform(0, L);
     y = random.uniform(0, L);
     z = random.uniform(0, L);
-    writer.writerow([x, y, z]);
+    writer.writerow([i, x, y, z]);

@@ -34,6 +34,7 @@ deltax = -1*np.ones((N, N, N), dtype=float);
 
 nbar = float(ngal)/((N-1)**3);
 kf = 2.0*math.pi/L;
+kN = math.pi*N/L;
 
 f = open(file, 'rt');
 reader = csv.reader(f, delimiter=' ');
